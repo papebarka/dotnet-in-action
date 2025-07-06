@@ -4,6 +4,22 @@ using System.Reflection;
 namespace AsciiArtSvc;
 
 public static class AsciiArt{
+
+    /*public static Lazy<IEnumerable<string>> AllFonts =
+        new ( () =>
+            from p in typeof(FiggleFonts)
+                .GetProperties(BindingFlags.Public | BindingFlags.Static)
+            select p.Name);*/
+
+    
+    public static Lazy<IEnumerable<(string Name, FiggleFont Font)>> AllFonts = new (() => 
+        from p in typeof(FiggleFonts)
+            .GetProperties(BindingFlags.Public | BindingFlags.Static)
+        select (
+            Name: p.Name,
+            Font: (p.GetValue(null) as FiggleFont)
+        ));
+
     public static string Write(string name, string? fontName = null){
         FiggleFont? font = null;
         if (!string.IsNullOrWhiteSpace(fontName))
@@ -18,10 +34,4 @@ public static class AsciiArt{
         return font.Render(name);
         
     }
-
-    public static Lazy<IEnumerable<string>> AllFonts =
-        new ( () =>
-            from p in typeof(FiggleFonts)
-                .GetProperties(BindingFlags.Public | BindingFlags.Static)
-            select p.Name);
 }
