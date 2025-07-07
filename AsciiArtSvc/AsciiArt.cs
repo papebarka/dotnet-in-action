@@ -20,7 +20,7 @@ public static class AsciiArt{
             Font: (p.GetValue(null) as FiggleFont)
         ));
 
-    public static string Write(string name, string? fontName = null){
+    public static bool Write(string text, out string? asciiText, string? fontName = null){
         FiggleFont? font = null;
         if (!string.IsNullOrWhiteSpace(fontName))
         {
@@ -28,10 +28,20 @@ public static class AsciiArt{
                 .GetProperty(fontName, BindingFlags.Static | BindingFlags.Public)
                 ?.GetValue(null) as FiggleFont;
         }
+        else
+        {
+            font = FiggleFonts.Standard;
+        }
 
-        font ??= FiggleFonts.Standard;
+        if (font == null)
+        {
+            asciiText = null;
+            return false;
+        }
 
-        return font.Render(name);
+        asciiText = font.Render(text);
+
+        return true;
         
     }
 }

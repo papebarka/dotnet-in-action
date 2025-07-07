@@ -27,6 +27,9 @@ app.MapGet("/", (int? skip, int? take, FiggleTextDirection? dir, string? name, s
         .Select(f => f.Name);
 });
 
-app.MapGet("/{text}", (string text, string? font) => AsciiArt.Write(text, font));
+app.MapGet("/{text}", (string text, string? font) =>
+    AsciiArt.Write(text, out var asciiText, font)
+    ? Results.Content(asciiText!)
+    : Results.NotFound());
 
 app.Run();
